@@ -24,7 +24,7 @@ var connection = mysql.createConnection({
 
   function start() {
     console.log ("Available for purchase...\n");
-    var query = "SELECT item_id, product_name, price FROM products";
+    var query = "SELECT item_id AS Item, product_name  AS Description, concat('$', price) AS Price FROM products";
     connection.query( query, function(err, res) {
         if (err) throw err;
         console.table(res);
