@@ -6,7 +6,8 @@ var connection = mysql.createConnection({
     host: "localhost",
   
     // Your port; if not 3306
-    port: 8889,
+    //port: 8889,
+    port: 3306,
   
     // Your username
     user: "root",
@@ -31,8 +32,10 @@ var connection = mysql.createConnection({
         connection.end();
     });
 };
+  makePurchase();
 
   
+  function makePurchase() {
   inquirer
     .prompt({
       item: "item#",
@@ -48,15 +51,15 @@ var connection = mysql.createConnection({
     .then(function(answer){
       //connection.query(
       
-          var query = "Select topAlbums.year, topAlbums.position, topAlbums.artist, top5000.song, album FROM topAlbums ";
-                      query += "INNER JOIN top5000 on topAlbums.artist = top5000.artist  WHERE (topAlbums.artist = ?) ",
-          connection.query( query, answer.artist, function(err, res)     
+          //var query = "UPDATE products SET stock_quantity = stock_quantity - 2 WHERE item_id = 3 ";
+            var query = "SELECT * FROM products";
+          connection.query( query, function(err, res)     
                       
             {
             if (err) throw err;
-            console.log(res.length + "matches found")
+            //console.log(res.length + "matches found")
             console.log(res);
-            for(var i = 0; i < res.length; i++){
+           /* for(var i = 0; i < res.length; i++){
               console.log(
                 i+1 + ".) " +
                   "Year: " + res[i].year +
@@ -66,7 +69,8 @@ var connection = mysql.createConnection({
                   " || Album: " + res[i].album
               
               )
-            }
+            }*/
           });
           connection.end();
     });
+  };
