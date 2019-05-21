@@ -33,36 +33,40 @@ var connection = mysql.createConnection({
 };
 
   
-    /*inquirer
-      .prompt({
-        name: "artist",
-        type: "input",
-        message: "What is the name of the artist you would like to search?"
+  inquirer
+    .prompt({
+      item: "item#",
+      type: "input",
+      message: "What is the ID of the item you would like to purchase?",
+    },
+    {
+      quantity: "quantity",
+      type: "input",
+      message: "How many units would you like to purchase?"
 
-         })
-      .then(function(answer){
-        //connection.query(
-        
-           var query = "Select topAlbums.year, topAlbums.position, topAlbums.artist, top5000.song, album FROM topAlbums ";
-                        query += "INNER JOIN top5000 on topAlbums.artist = top5000.artist  WHERE (topAlbums.artist = ?) ",
-           connection.query( query, answer.artist, function(err, res)     
-                        
-             {
-              if (err) throw err;
-              console.log(res.length + "matches found")
-              console.log(res);
-              for(var i = 0; i < res.length; i++){
-                console.log(
-                  i+1 + ".) " +
-                    "Year: " + res[i].year +
-                    " || Album Position: " + res[i].position +
-                    " || Artist: " + res[i].artist +
-                    " || Song: " + res[i].song +
-                    " || Album: " + res[i].album
-                
-                )
-              }
-            });
-            connection.end();
-      });
-  }*/
+    })
+    .then(function(answer){
+      //connection.query(
+      
+          var query = "Select topAlbums.year, topAlbums.position, topAlbums.artist, top5000.song, album FROM topAlbums ";
+                      query += "INNER JOIN top5000 on topAlbums.artist = top5000.artist  WHERE (topAlbums.artist = ?) ",
+          connection.query( query, answer.artist, function(err, res)     
+                      
+            {
+            if (err) throw err;
+            console.log(res.length + "matches found")
+            console.log(res);
+            for(var i = 0; i < res.length; i++){
+              console.log(
+                i+1 + ".) " +
+                  "Year: " + res[i].year +
+                  " || Album Position: " + res[i].position +
+                  " || Artist: " + res[i].artist +
+                  " || Song: " + res[i].song +
+                  " || Album: " + res[i].album
+              
+              )
+            }
+          });
+          connection.end();
+    });
