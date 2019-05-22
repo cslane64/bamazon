@@ -6,8 +6,8 @@ var connection = mysql.createConnection({
     host: "localhost",
   
     // Your port; if not 3306
-    //port: 8889,
-    port: 3306,
+    port: 8889,
+    //port: 3306,
   
     // Your username
     user: "root",
@@ -29,36 +29,73 @@ var connection = mysql.createConnection({
     connection.query( query, function(err, res) {
         if (err) throw err;
         console.table(res);
-        connection.end();
+        //connection.end();
+        makePurchase();
     });
 };
-  makePurchase();
-
   
-  function makePurchase() {
-  inquirer
-    .prompt({
-      item: "item#",
-      type: "input",
-      message: "What is the ID of the item you would like to purchase?",
-    },
-    {
-      quantity: "quantity",
-      type: "input",
-      message: "How many units would you like to purchase?"
+  
+function makePurchase(){
 
-    })
-    .then(function(answer){
-      //connection.query(
+  inquirer.prompt([
+		{
+			type: 'input',
+			name: 'item_id',
+			message: 'Please enter the Item ID which you would like to purchase.',
+			filter: Number
+		},
+		{
+			type: 'input',
+			name: 'quantity',
+			message: 'How many do you need?',
+			filter: Number
+		}
+	]).then(function(input) {
+		// console.log('Customer has selected: \n    item_id = '  + input.item_id + '\n    quantity = ' + input.quantity);
+
+		var item = input.item_id;
+		var quantity = input.quantity;
+
+		// Query db to confirm that the given item ID exists in the desired quantity
+    var queryStr = 'SELECT * FROM products WHERE ?';
+    connection.query(queryStr, {item_id: input.item_id}, function(err, res){
+      console.log('data = ' + JSON.stringify(res));
+
+      if (res.length === 0){
+        console.log("Error! You selected an invalid product! Please select a product in the list");
+      } else {
+        productData = res[0];
+      }
+      console.log(productData.stock_quantity);
+
+      /*if(productData.stock_quantity <= quantity) {
+        console.log("These is not sufficient quantity in stock for your order. Please choose a lower quantity!");
+      } else {
+        var query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ? ";
+        connection.query( query, {quantity: input.quantity}, {item: input.item}, function(err, res) {
+          console.log("Your order has been placed");
+        })
+      }*/
+      })
+    
+
+
+    console.log(item, quantity);
+    
+
+    
+
+
+  /*
       
-          //var query = "UPDATE products SET stock_quantity = stock_quantity - 2 WHERE item_id = 3 ";
-            var query = "SELECT * FROM products";
-          connection.query( query, function(err, res)     
+          //var query = "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ? ";
+          //var query = "SELECT * FROM products";
+          //connection.query( query, answer.quantity, answer.name, function(err, res)     
                       
-            {
-            if (err) throw err;
+            //{
+           // if (err) throw err;
             //console.log(res.length + "matches found")
-            console.log(res);
+            //console.log(res);
            /* for(var i = 0; i < res.length; i++){
               console.log(
                 i+1 + ".) " +
@@ -69,8 +106,9 @@ var connection = mysql.createConnection({
                   " || Album: " + res[i].album
               
               )
-            }*/
-          });
+            }
+          });*/
           connection.end();
-    });
+    //});
+        })
   };
