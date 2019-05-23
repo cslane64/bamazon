@@ -6,8 +6,8 @@ var cart = 0;
 
 var connection = mysql.createConnection({
     host: "localhost",
-    // port: 8889,
-    port: 3306,
+    port: 8889,
+    // port: 3306,
     user: "root",
     password: "root",
     database: "bamazon"
@@ -79,17 +79,17 @@ function makePurchase(){
       var inventory = productData.stock_quantity;
       
 
-      if(quantityOrdered < inventory){
+      if(quantityOrdered <= inventory){
         var orderAmount = input.quantity * productData.price;
-        cart = parseFloat(orderAmount).toFixed(2) + cart;
+        cart = orderAmount + cart;
         console.log("Your transction has been processed".green);
         console.log("Your total purchase amount for this item is: $".green + parseFloat(orderAmount ).toFixed(2));
-        console.log("The total cost is: $".blue + cart);
+        console.log("The total cost is: $".blue + cart );
         var query2 = 'UPDATE products SET stock_quantity = stock_quantity - ?  WHERE item_id = 4';
         connection.query(query2, [quantityOrdered, item], function(err, res){
          // if (err) throw err;
         })
-        //nextStep();
+        nextStep();
       } else {
         console.log("You have ordered more than we have in stock, please select again!");
         console.log("We currently have " + inventory + " of these in stock.");
@@ -99,7 +99,7 @@ function makePurchase(){
         connection.query( query, function(err, res) {
           if (err) throw err;
           console.table(res);
-          makePurchase();
+          //makePurchase();
           });
         }
       })
