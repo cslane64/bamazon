@@ -33,7 +33,7 @@ var connection = mysql.createConnection({
     });
        // makePurchase();
 };
-  function showInv(){
+  /*function showInv(){
     
     var query = "SELECT item_id AS Item, product_name  AS Description, concat('$', price) AS Price FROM products";
     connection.query( query, function(err, res) {
@@ -41,7 +41,7 @@ var connection = mysql.createConnection({
         console.table(res);
         //connection.end();
     });
-  }
+  }*/
   
 function makePurchase(){
 
@@ -73,6 +73,7 @@ function makePurchase(){
 
       if (res.length === 0){
         console.log("Error! You selected an invalid product! Please select a product in the list".red);
+        makePurchase();
       } else {
         productData = res[0];
       }
@@ -81,50 +82,43 @@ function makePurchase(){
 
       if(quantityOrdered <= inventory){
         var orderAmount = input.quantity * productData.price;
-        cart = orderAmount + cart;
+       
         console.log("Your transction has been processed".green);
         console.log("Your total purchase amount for this item is: $".green + parseFloat(orderAmount ).toFixed(2));
-        console.log("The total cost is: $".blue + cart );
-        var query2 = 'UPDATE products SET stock_quantity = stock_quantity - ?  WHERE item_id = 4';
+        var query2 = 'UPDATE products SET stock_quantity = stock_quantity - ?  WHERE item_id = ?';
         connection.query(query2, [quantityOrdered, item], function(err, res){
-         // if (err) throw err;
+          //if (err) throw err;
+        end();
         })
-        nextStep();
+        
       } else {
-        console.log("You have ordered more than we have in stock, please select again!");
+        console.log("********************************************************************\n".red);
+        console.log("You have ordered more than we have in stock.");
         console.log("We currently have " + inventory + " of these in stock.");
+        console.log("PLease adjust the quantity odered!")
+        console.log("********************************************************************\n".red);
         console.log ("Available for purchases...\n");
+
         
         var query = "SELECT item_id AS Item, product_name  AS Description, concat('$', price) AS Price FROM products";
         connection.query( query, function(err, res) {
           if (err) throw err;
           console.table(res);
-          //makePurchase();
+          makePurchase();
           });
         }
       })
     })
   };
 
-  function nextStep(){
-    inquirer.prompt([
-      {
-        message: 'Would you like to purchase another item?',
-        type: "confirm",
-        name: "exit",
-        default: true
-      }
 
-    ]).then(function(answers){
-      if(answers.exit == true) {
-        showInv();
-        makePurchase();
-      } else {
-        console.log(" Thank your for shopping with Bamazon!!".bgCyan)
-        connection.end();
-        process.exit();
-      }
+function end(){
+  console.log("Thank your for shopping at Bamazon!!".bgMagenta.black);
+  connection.end();
 
-    })
+}  
+  
+    
 
-  }
+  
+  
